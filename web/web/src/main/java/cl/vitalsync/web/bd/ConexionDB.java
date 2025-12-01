@@ -1,4 +1,3 @@
-
 package cl.vitalsync.web.bd;
 
 import java.sql.Connection;
@@ -7,19 +6,39 @@ import java.sql.SQLException;
 
 public class ConexionDB {
 
-    private static final String RUTA_WALLET = "C:/WALLET";
+    
     private static final String NOMBRE_SERVICIO = "vitalsyncbd2025_high";
     private static final String USER = "ADMIN";
     private static final String PASS = "Proyecto_VitalSync2025";
 
+    public static Connection getConnection() throws SQLException {
 
-    static Connection getConnection() throws SQLException {
+        // 2. Detección Inteligente de Ruta (Local vs Nube)
+        String walletPath;
+        String os = System.getProperty("os.name").toLowerCase();
 
-        System.setProperty("oracle.net.tns_admin", RUTA_WALLET);
+        if (os.contains("win")) {
+            // TU PC (WINDOWS)
+            // Asegúrate que esta ruta exista y tenga cwallet.sso dentro
+            walletPath = "C:\\Users\\Lucas\\Escritorio\\VitalSync\\wallet";
+        } else {
+            // NUBE (RAILWAY / LINUX)
+            // Maven guarda los recursos aquí al compilar en la nube
+            walletPath = "/app/target/classes/wallet";
+        }
 
-        String dbUrl = "jdbc:oracle:thin:@" + NOMBRE_SERVICIO;
+        // 3. Construcción de la URL JDBC (¡Aquí estaba el error!)
+        // Estructura: jdbc:oracle:thin:@ALIAS?TNS_ADMIN=RUTA
+        String dbUrl = "jdbc:oracle:thin:@" + NOMBRE_SERVICIO + "?TNS_ADMIN=" + walletPath;
 
-        return DriverManager.getConnection(dbUrl, USER, PASS);
+        // 4. Conectar
+        try {
+            return DriverManager.getConnection(dbUrl, USER, PASS);
+        } catch (SQLException e) {
+            System.err.println("❌ Error crítico de conexión.");
+            System.err.println("URL intentada: " + dbUrl);
+            System.err.println("Ruta Wallet: " + walletPath);
+            throw e;
+        }
     }
-
 }
