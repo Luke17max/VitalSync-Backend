@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class ConexionDB {
 
     
-    private static final String NOMBRE_SERVICIO = "vitalsyncbd2025_tp";
+    private static final String NOMBRE_SERVICIO = "vitalsyncbd2025_high";
     private static final String USER = "ADMIN";
     private static final String PASS = "Proyecto_VitalSync2025";
 
