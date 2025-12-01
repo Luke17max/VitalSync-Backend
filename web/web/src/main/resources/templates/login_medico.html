@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso Médico - VitalSync</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="theme-color" content="#004d40">
+    <style>
+        /* TEMA VERDE QUIRÚRGICO */
+        :root {
+            --doc-primary: #004d40;
+            --doc-light: #e0f2f1;
+        }
+        body { 
+            background-color: var(--doc-light); 
+            font-family: 'Segoe UI', sans-serif; 
+            display: flex; align-items: center; justify-content: center; min-height: 100vh; 
+        }
+        .card-login { 
+            border: none; 
+            border-radius: 20px; 
+            box-shadow: 0 20px 40px rgba(0, 77, 64, 0.2); 
+            width: 100%; max-width: 380px; 
+            overflow: hidden; 
+        }
+        .card-header { 
+            background-color: var(--doc-primary); 
+            color: white; 
+            padding: 30px; 
+            text-align: center; border: none; 
+        }
+        
+        /* Logo estilo Médico */
+        .logo-medico {
+            height: 70px;
+            width: auto;
+            background: white;
+            padding: 8px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .btn-medico { 
+            background-color: #00796b; 
+            color: white; 
+            font-weight: bold; width: 100%; padding: 15px; border-radius: 10px; border: none; font-size: 1.1rem; 
+            transition: background 0.3s;
+        }
+        .btn-medico:hover { background-color: #004d40; }
+        
+        .form-control {
+            border-radius: 10px; padding: 12px; background: #fafafa; border: 2px solid #eee;
+        }
+        .form-control:focus { border-color: #00796b; box-shadow: none; }
+    </style>
+</head>
+<body>
+
+    <div class="card card-login">
+        <div class="card-header">
+            <!-- LOGO AQUÍ -->
+            <img src="/img/logo.png" alt="Logo Médico" class="logo-medico" onerror="this.style.display='none';">
+            
+            <h3 class="fw-bold mb-0">Portal Médico</h3>
+            <p class="mb-0 opacity-75 text-uppercase small" style="letter-spacing: 2px;">Acceso Restringido</p>
+        </div>
+        <div class="card-body p-4 bg-white">
+            
+            <div th:if="${error}" class="alert alert-danger text-center border-0 bg-red-50 text-red-700 rounded-3 py-2" role="alert">
+                <small th:text="${error}">Error</small>
+            </div>
+
+            <form action="/medico-login" method="post">
+                <div class="mb-3">
+                    <label class="form-label text-muted fw-bold small">RUT PROFESIONAL</label>
+                    <input type="text" name="rut" class="form-control" placeholder="Ej: 11111111-1" required>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label text-muted fw-bold small">CONTRASEÑA</label>
+                    <input type="password" name="password" class="form-control" placeholder="••••••" required>
+                </div>
+                <button type="submit" class="btn btn-medico mb-3 shadow-sm">INGRESAR AL SISTEMA</button>
+            </form>
+            
+            <div class="text-center border-top pt-3">
+                <a href="/" class="text-decoration-none text-muted fw-bold small">← Volver a VitalSync</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
