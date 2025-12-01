@@ -1,3 +1,5 @@
+
+
 -- 1. Tabla de Médicos
 CREATE TABLE MEDICO (
     rut_medico VARCHAR2(12) NOT NULL PRIMARY KEY,

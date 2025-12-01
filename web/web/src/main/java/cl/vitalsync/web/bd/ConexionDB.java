@@ -19,8 +19,8 @@ public class ConexionDB {
 
         if (os.contains("win")) {
             // TU PC (WINDOWS)
-            // Asegúrate que esta ruta exista y tenga cwallet.sso dentro
-            walletPath = "C:\\Users\\Lucas\\Escritorio\\VitalSync\\wallet";
+           
+            walletPath = "C:\\WALLET";
         } else {
             // NUBE (RAILWAY / LINUX)
             // Maven guarda los recursos aquí al compilar en la nube
