@@ -1,5 +1,3 @@
-
-
 -- 1. Tabla de Médicos
 CREATE TABLE MEDICO (
     rut_medico VARCHAR2(12) NOT NULL PRIMARY KEY,
@@ -43,7 +41,7 @@ INSERT INTO MEDICO (rut_medico, nombre_completo, especialidad) VALUES ('55555555
 
 -- 2. Paciente de Prueba
 INSERT INTO USUARIO (rut_paciente, email, password_hash, nombre_completo, telefono)
-VALUES ('99999999-9', 'cristian@gmail.com', '123456', 'Cristian Carvajal', '+56943211234');
+VALUES ('99999999-9', 'kevin@gmail.com', '123456', 'Kevin García', '+56943211234');
 
 -- 3. CITAS 
 

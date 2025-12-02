@@ -1,5 +1,6 @@
 package cl.vitalsync.web.controlador;
 
+import cl.vitalsync.web.servicio.ValidacionUtil;
 import cl.vitalsync.web.modelo.HoraMedica;
 import cl.vitalsync.web.modelo.Paciente;
 import cl.vitalsync.web.modelo.Medico;
@@ -68,13 +69,20 @@ public class VitalSyncControlador {
     // --- LOGIN MÉDICO (ACCIÓN) ---
     @PostMapping("/medico-login")
     public String procesarLoginMedico(@RequestParam String rut, @RequestParam String password, HttpSession session, RedirectAttributes flash) {
-        Medico medico = servicio.iniciarSesionMedico(rut, password);
+        
+        // Validación previa de formato
+        if (!ValidacionUtil.esRutValido(rut)) {
+            flash.addFlashAttribute("error", "Formato de RUT inválido.");
+            return "redirect:/medico-login";
+        }
 
+        Medico medico = servicio.iniciarSesionMedico(rut, password);
+        
         if (medico != null) {
             session.setAttribute("medicoLogueado", medico);
             return "redirect:/medico";
         } else {
-            flash.addFlashAttribute("error", "Credenciales incorrectas.");
+            flash.addFlashAttribute("error", "Credenciales incorrectas o médico no registrado.");
             return "redirect:/medico-login";
         }
     }
@@ -88,13 +96,28 @@ public class VitalSyncControlador {
     // --- LOGIN PACIENTE ---
     @PostMapping("/login")
     public String login(@RequestParam String email, @RequestParam String password, HttpSession session, RedirectAttributes flash) {
+        
+        // 1. Validar que el email tenga formato correcto (ej: texto@texto.com)
+        if (!ValidacionUtil.esEmailValido(email)) {
+            flash.addFlashAttribute("error", "El formato del correo no es válido.");
+            return "redirect:/"; // Vuelve a cargar el login con el error
+        }
+
+        // 2. Validar que la contraseña no venga vacía
+        if (password == null || password.trim().isEmpty()) {
+            flash.addFlashAttribute("error", "Debe ingresar su contraseña.");
+            return "redirect:/";
+        }
+
+        // 3. Si pasa las validaciones, intentamos buscar en la Base de Datos
         Paciente paciente = servicio.iniciarSesion(email, password);
+        
         if (paciente != null) {
             session.setAttribute("usuarioLogueado", paciente);
             return "redirect:/";
         } else {
-            flash.addFlashAttribute("error", "Credenciales incorrectas.");
-            return "redirect:/";
+            flash.addFlashAttribute("error", "Credenciales incorrectas o usuario no registrado.");
+            return "redirect:/"; 
         }
     }
 
@@ -103,14 +126,41 @@ public class VitalSyncControlador {
     public String registro(@RequestParam String rut, @RequestParam String nombre,
             @RequestParam String email, @RequestParam String telefono,
             @RequestParam String password, HttpSession session, RedirectAttributes flash) {
+
+        // 1. Validar Nombre (Sin símbolos raros)
+        if (!ValidacionUtil.esNombreValido(nombre)) {
+            flash.addFlashAttribute("error", "El nombre contiene caracteres inválidos.");
+            return "redirect:/";
+        }
+
+        // 2. Validar Teléfono (Solo números)
+        if (!ValidacionUtil.esTelefonoValido(telefono)) {
+            flash.addFlashAttribute("error", "El teléfono debe contener solo números.");
+            return "redirect:/";
+        }
+
+        // 3. Validar RUT (Módulo 11)
+        if (!ValidacionUtil.esRutValido(rut)) {
+            flash.addFlashAttribute("error", "El RUT ingresado no es válido.");
+            return "redirect:/";
+        }
+
+        // 4. Validar Contraseña (Mínimo 4 caracteres)
+        if (password == null || password.length() < 4) {
+            flash.addFlashAttribute("error", "La contraseña es muy corta.");
+            return "redirect:/";
+        }
+
+        // SI PASA TODO, INTENTAMOS GUARDAR
         boolean exito = servicio.registrarNuevoPaciente(rut, email, password, nombre, telefono);
+
         if (exito) {
             Paciente nuevo = new Paciente(rut, email, password, nombre, telefono);
             session.setAttribute("usuarioLogueado", nuevo);
             flash.addFlashAttribute("mensaje", "¡Bienvenido a VitalSync!");
             flash.addFlashAttribute("tipo", "success");
         } else {
-            flash.addFlashAttribute("error", "Error al registrar.");
+            flash.addFlashAttribute("error", "Error: El RUT o Correo ya están registrados.");
         }
         return "redirect:/";
     }
