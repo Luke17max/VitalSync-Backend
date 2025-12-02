@@ -4,13 +4,8 @@ import java.util.regex.Pattern;
 
 public class ValidacionUtil {
 
-    // Solo letras y espacios, mín 3 caracteres
     private static final String REGEX_NOMBRE = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]{3,50}$";
-
-    // Solo números, entre 8 y 12 dígitos (acepta +569...)
     private static final String REGEX_TELEFONO = "^\\+?[0-9]{8,12}$";
-
-    // Formato Email simple
     private static final String REGEX_EMAIL = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
 
     public static boolean esNombreValido(String nombre) {
@@ -25,55 +20,46 @@ public class ValidacionUtil {
         return email != null && Pattern.matches(REGEX_EMAIL, email);
     }
 
-    // --- ALGORITMO MÓDULO 11  ---
+    /**
+     * Valida el RUT chileno usando el algoritmo Módulo 11. Soporta formatos con
+     * puntos, guion, sin ellos, y DV 'K' o 'k'.
+     */
     public static boolean esRutValido(String rut) {
         if (rut == null || rut.trim().isEmpty()) {
             return false;
         }
 
-        // 1. Limpiar y Estandarizar (Quitar puntos, guion y pasar a MAYÚSCULAS)
-        String rutLimpio = rut.replace(".", "").replace("-", "").toUpperCase();
+        // 1. Limpiar: Quitar puntos y guiones, y pasar a Mayúsculas (k -> K)
+        String rutLimpio = rut.replace(".", "").replace("-", "").trim().toUpperCase();
 
-        // Validar largo mínimo (ej: 1111111-1 son 8 caracteres)
-        if (rutLimpio.length() < 7) {
+        // 2. Validar largo mínimo (ej: 1-9 son 2 caracteres). Antes estaba en 7 y fallaba con RUTs de prueba.
+        if (rutLimpio.length() < 2) {
             return false;
         }
 
         try {
-            // 2. Separar Cuerpo y Dígito Verificador (DV)
+            // 3. Separar Cuerpo y DV
             String cuerpo = rutLimpio.substring(0, rutLimpio.length() - 1);
             char dvIngresado = rutLimpio.charAt(rutLimpio.length() - 1);
 
-            // 3. Calcular DV esperado usando Módulo 11
+            // 4. Calcular DV esperado (Algoritmo Módulo 11 Compacto)
             int rutAux = Integer.parseInt(cuerpo);
-            int s = 0;
-            int m = 2;
+            int s = 1;
+            int m = 0;
 
-            while (rutAux > 0) {
-                s += (rutAux % 10) * m;
-                rutAux /= 10;
-                m++;
-                if (m > 7) {
-                    m = 2;
-                }
+            for (; rutAux != 0; rutAux /= 10) {
+                s = (s + rutAux % 10 * (9 - m++ % 6)) % 11;
             }
 
-            int resto = 11 - (s % 11);
+            // Si el resultado es 'K', el valor char será 75. Si es número, será su ASCII.
+            char dvCalculado = (char) (s != 0 ? s + 47 : 75);
 
-            char dvCalculado;
-            if (resto == 11) {
-                dvCalculado = '0';
-            } else if (resto == 10) {
-                dvCalculado = 'K'; // Aquí aseguramos que 10 sea 'K'
-            } else {
-                dvCalculado = (char) (resto + '0'); // Convertir número a char (ej: 5 -> '5')
-            }
-
-            // 4. Comparar
+            // 5. Comparar
             return dvIngresado == dvCalculado;
 
         } catch (NumberFormatException e) {
-            return false; // Si el cuerpo no es numérico, el RUT es inválido
+            // Si el cuerpo contiene letras, no es un RUT válido
+            return false;
         }
     }
 
