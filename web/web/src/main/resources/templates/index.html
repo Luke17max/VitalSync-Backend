@@ -51,16 +51,6 @@
                 margin-right: 15px;
             }
 
-            /* TARJETA DE BIENVENIDA (NUEVO) */
-            .welcome-card {
-                background: linear-gradient(135deg, #ffffff, #f1f8f6);
-                border-left: 6px solid var(--medical-accent);
-                border-radius: 15px;
-                padding: 20px;
-                margin-bottom: 25px;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            }
-
             /* TARJETAS */
             .card-cita {
                 border: 1px solid #dae0e5;
@@ -100,6 +90,10 @@
                 margin-bottom: 10px;
                 color: var(--text-dark);
                 background-color: #fafafa;
+            }
+            .input-fecha-grande:focus {
+                border-color: var(--medical-primary);
+                box-shadow: 0 0 0 0.25rem rgba(0, 105, 92, 0.25);
             }
 
             /* BOTONES */
@@ -212,6 +206,16 @@
                 margin-bottom: 10px;
             }
 
+            /* TARJETA DE BIENVENIDA */
+            .welcome-card {
+                background: linear-gradient(135deg, #ffffff, #f1f8f6);
+                border-left: 6px solid var(--medical-accent);
+                border-radius: 15px;
+                padding: 20px;
+                margin-bottom: 25px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            }
+
             /* VISTAS */
             .vista {
                 display: none;
@@ -246,20 +250,18 @@
                     </div>
                 </div>
                 <div class="text-end text-white">
-                    <small class="d-block opacity-75">Sesión</small>
+                    <small class="d-block opacity-75">Bienvenido</small>
                     <strong th:text="${usuario.nombreCompleto}">Paciente</strong>
                 </div>
             </div>
 
             <div class="container">
-
                 <div th:if="${mensaje}" class="alert alert-dismissible fade show shadow-sm p-4" 
                      th:classappend="${'alert-' + tipo}" role="alert" style="border-radius: 12px; font-size: 1.1rem;">
                     <strong th:text="${mensaje}"></strong>
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
 
-                <!-- TARJETA DE BIENVENIDA (NUEVO) -->
                 <div class="welcome-card">
                     <h3 class="fw-bold mb-2" style="color: var(--medical-primary);">👋 ¡Bienvenido/a!</h3>
                     <p class="text-muted mb-0" style="font-size: 1.1rem;">
@@ -386,9 +388,7 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- BOTÓN DE CANCELAR CON REGLA DE 24 HORAS -->
-                        <form action="/cancelar" method="post" onsubmit="return confirm('¿Realmente desea cancelar la cita?\n\nRegla de Negocio: Solo es posible cancelar una cita hasta 24 horas antes de la hora programada.');">
+                        <form action="/cancelar" method="post" onsubmit="return confirm('¿Confirma cancelar? Solo posible con 24h de anticipación.');">
                             <input type="hidden" name="idCita" th:value="${cita.idCita}"/>
                             <button type="submit" class="btn-cancelar">CANCELAR CITA</button>
                         </form>
@@ -410,7 +410,6 @@
                         <small class="text-muted fw-bold d-block mb-1">NOMBRE COMPLETO</small>
                         <strong class="fs-4 text-dark" th:text="${usuario.nombreCompleto}">Nombre</strong>
                     </div>
-                    <!-- RUT Oculto por seguridad -->
                     <div class="mb-4">
                         <small class="text-muted fw-bold d-block mb-1">CORREO</small>
                         <strong class="fs-5 text-dark" th:text="${usuario.email}">Email</strong>
@@ -439,7 +438,6 @@
                     </div>
                     <div class="modal-body text-center">
                         <p class="mb-3">Está a punto de agendar la siguiente hora:</p>
-
                         <div class="detalle-confirmacion">
                             <div class="detalle-label">MÉDICO</div>
                             <div class="detalle-valor" id="modalMedico">Dr. Nombre</div>
@@ -457,7 +455,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <form action="/reservar" method="post">
                             <input type="hidden" name="idCita" id="modalIdCita"/>
                             <button type="submit" class="btn btn-success w-100 py-3 fw-bold shadow-sm" style="font-size:1.2rem;">
@@ -518,11 +515,17 @@
                 }
 
                 window.onload = function () {
-                    const hoy = new Date().toISOString().split('T')[0];
-                    const input = document.getElementById('fechaInicio');
-                    if (input) {
-                        input.value = hoy;
-                        filtrarPorFechas();
+                    // Rango de fechas por defecto: Diciembre 2025 (Demo)
+                    const inicioDemo = "2025-12-01";
+                    const finDemo = "2025-12-31";
+
+                    const inputInicio = document.getElementById('fechaInicio');
+                    const inputFin = document.getElementById('fechaFin');
+
+                    if (inputInicio && inputFin) {
+                        inputInicio.value = inicioDemo;
+                        inputFin.value = finDemo;
+                        filtrarPorFechas(); // Aplicar filtro inicial
                     }
                 };
         </script>

@@ -1,15 +1,15 @@
-
 package cl.vitalsync.web.servicio;
 
 import java.util.regex.Pattern;
 
 public class ValidacionUtil {
+
     // Solo letras y espacios, mín 3 caracteres
     private static final String REGEX_NOMBRE = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]{3,50}$";
-    
+
     // Solo números, entre 8 y 12 dígitos (acepta +569...)
     private static final String REGEX_TELEFONO = "^\\+?[0-9]{8,12}$";
-    
+
     // Formato Email simple
     private static final String REGEX_EMAIL = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
 
@@ -25,34 +25,56 @@ public class ValidacionUtil {
         return email != null && Pattern.matches(REGEX_EMAIL, email);
     }
 
-    // ALGORITMO MÓDULO 11 (RUT CHILENO)
+    // --- ALGORITMO MÓDULO 11  ---
     public static boolean esRutValido(String rut) {
-        if (rut == null || rut.trim().isEmpty()) return false;
-        
-        // Limpiar puntos y guión
+        if (rut == null || rut.trim().isEmpty()) {
+            return false;
+        }
+
+        // 1. Limpiar y Estandarizar (Quitar puntos, guion y pasar a MAYÚSCULAS)
         String rutLimpio = rut.replace(".", "").replace("-", "").toUpperCase();
-        
-        // Validar largo mínimo
-        if (rutLimpio.length() < 7 || rutLimpio.length() > 9) return false;
+
+        // Validar largo mínimo (ej: 1111111-1 son 8 caracteres)
+        if (rutLimpio.length() < 7) {
+            return false;
+        }
 
         try {
-            // Separar cuerpo y dígito verificador
+            // 2. Separar Cuerpo y Dígito Verificador (DV)
             String cuerpo = rutLimpio.substring(0, rutLimpio.length() - 1);
             char dvIngresado = rutLimpio.charAt(rutLimpio.length() - 1);
 
+            // 3. Calcular DV esperado usando Módulo 11
             int rutAux = Integer.parseInt(cuerpo);
-            int m = 0, s = 1;
-            for (; rutAux != 0; rutAux /= 10) {
-                s = (s + rutAux % 10 * (9 - m++ % 6)) % 11;
-            }
-            char dvCalculado = (char) (s != 0 ? s + 47 : 75);
+            int s = 0;
+            int m = 2;
 
+            while (rutAux > 0) {
+                s += (rutAux % 10) * m;
+                rutAux /= 10;
+                m++;
+                if (m > 7) {
+                    m = 2;
+                }
+            }
+
+            int resto = 11 - (s % 11);
+
+            char dvCalculado;
+            if (resto == 11) {
+                dvCalculado = '0';
+            } else if (resto == 10) {
+                dvCalculado = 'K'; // Aquí aseguramos que 10 sea 'K'
+            } else {
+                dvCalculado = (char) (resto + '0'); // Convertir número a char (ej: 5 -> '5')
+            }
+
+            // 4. Comparar
             return dvIngresado == dvCalculado;
-        } catch (Exception e) {
-            return false; // Si falla al parsear números, es inválido
+
+        } catch (NumberFormatException e) {
+            return false; // Si el cuerpo no es numérico, el RUT es inválido
         }
     }
-    
-    
-    
+
 }
