@@ -107,7 +107,7 @@ public class RepositorioCita {
         } catch (SQLException e) { return false; }
     }
 
-    // 6. Agenda Médico (EL MÉTODO QUE FALTABA EN EL REPO TAMBIÉN)
+    // 6. Agenda Médico 
     public List<HoraMedica> buscarAgendaMedico(String rutMedico, String fechaInicio, String fechaFin) {
         List<HoraMedica> agenda = new ArrayList<>();
         String sql = "SELECT c.id_cita, m.nombre_completo AS medico, m.especialidad, c.fecha_hora, u.nombre_completo AS paciente, c.estado " +

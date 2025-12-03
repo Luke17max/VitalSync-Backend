@@ -63,7 +63,7 @@ public class VitalSyncControlador {
     // --- LOGIN MÉDICO (VISTA) ---
     @GetMapping("/medico-login")
     public String loginMedicoPage() {
-        return "login_medico"; // Carga login_medico.html
+        return "login_medico"; 
     }
 
     // --- LOGIN MÉDICO (ACCIÓN) ---
@@ -139,7 +139,7 @@ public class VitalSyncControlador {
             return "redirect:/";
         }
 
-        // 3. Validar RUT (Módulo 11)
+        // 3. Validar RUT 
         if (!ValidacionUtil.esRutValido(rut)) {
             flash.addFlashAttribute("error", "El RUT ingresado no es válido.");
             return "redirect:/";

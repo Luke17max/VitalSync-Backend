@@ -18,7 +18,7 @@ public class ConexionDB {
         String os = System.getProperty("os.name").toLowerCase();
 
         if (os.contains("win")) {
-            // TU PC (WINDOWS)
+            
            
             walletPath = "C:\\WALLET";
         } else {
@@ -27,7 +27,7 @@ public class ConexionDB {
             walletPath = "/app/target/classes/wallet";
         }
 
-        // 3. Construcción de la URL JDBC (¡Aquí estaba el error!)
+        // 3. Construcción de la URL JDBC 
         // Estructura: jdbc:oracle:thin:@ALIAS?TNS_ADMIN=RUTA
         String dbUrl = "jdbc:oracle:thin:@" + NOMBRE_SERVICIO + "?TNS_ADMIN=" + walletPath;
 

@@ -30,7 +30,7 @@ public class ValidacionUtil {
     }
 
     /**
-     * Validación de RUT RELAJADA. Solo verifica que no esté vacío. Acepta
+     * Validación de RUT . Solo verifica que no esté vacío. Acepta
      * cualquier número o formato.
      */
     public static boolean esRutValido(String rut) {
@@ -38,8 +38,7 @@ public class ValidacionUtil {
             return false;
         }
 
-        // Ya no hacemos cálculo matemático (Módulo 11). 
-        // Si tiene más de 2 caracteres, lo damos por bueno.
+        
         return rut.length() > 2;
     }
 

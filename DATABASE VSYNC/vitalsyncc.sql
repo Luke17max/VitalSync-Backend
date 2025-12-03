@@ -1,3 +1,4 @@
+
 -- 1. Tabla de Médicos
 CREATE TABLE MEDICO (
     rut_medico VARCHAR2(12) NOT NULL PRIMARY KEY,
@@ -28,9 +29,9 @@ CREATE TABLE CITA (
     CONSTRAINT fk_cita_usuario FOREIGN KEY (rut_paciente) REFERENCES USUARIO(rut_paciente)
 );
 
--- =============================================
+
 -- DATOS DE PRUEBA 
--- =============================================
+
 
 -- 1. Médicos
 INSERT INTO MEDICO (rut_medico, nombre_completo, especialidad) VALUES ('11111111-1', 'Dr. Juan Pérez', 'Cardiología');

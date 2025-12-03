@@ -21,7 +21,7 @@ public class ServicioReserva {
     public Paciente iniciarSesion(String email, String password) {
         return usuarioRepo.validarLogin(email, password);
     }
-     // --- LOGIN MÉDICO (NUEVO) ---
+     // --- LOGIN MÉDICO  ---
     public Medico iniciarSesionMedico(String rut, String password) {
         return medicoRepo.validarLogin(rut, password);
     }
