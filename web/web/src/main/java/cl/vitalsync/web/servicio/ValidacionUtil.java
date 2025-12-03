@@ -20,45 +20,64 @@ public class ValidacionUtil {
         return email != null && Pattern.matches(REGEX_EMAIL, email);
     }
 
-    /**
-     * Valida el RUT chileno usando el algoritmo Módulo 11. Soporta formatos con
-     * puntos, guion, sin ellos, y DV 'K' o 'k'.
-     */
+    
     public static boolean esRutValido(String rut) {
         if (rut == null || rut.trim().isEmpty()) {
             return false;
         }
 
-        // 1. Limpiar: Quitar puntos y guiones, y pasar a Mayúsculas (k -> K)
+        // 1. Limpiar y Estandarizar: Quitar puntos, guion y pasar a Mayúsculas
         String rutLimpio = rut.replace(".", "").replace("-", "").trim().toUpperCase();
 
-        // 2. Validar largo mínimo (ej: 1-9 son 2 caracteres). Antes estaba en 7 y fallaba con RUTs de prueba.
+        // 2. Validar largo mínimo (ej: 1-9 son 2 caracteres)
         if (rutLimpio.length() < 2) {
             return false;
         }
 
         try {
-            // 3. Separar Cuerpo y DV
-            String cuerpo = rutLimpio.substring(0, rutLimpio.length() - 1);
+            // 3. Separar Cuerpo y Dígito Verificador (DV)
+            // El DV es siempre el último caracter
             char dvIngresado = rutLimpio.charAt(rutLimpio.length() - 1);
+            
+            String cuerpo = rutLimpio.substring(0, rutLimpio.length() - 1);
 
-            // 4. Calcular DV esperado (Algoritmo Módulo 11 Compacto)
+            // 4. Calcular DV esperado 
             int rutAux = Integer.parseInt(cuerpo);
-            int s = 1;
-            int m = 0;
+            int suma = 0;
+            int multiplicador = 2;
 
-            for (; rutAux != 0; rutAux /= 10) {
-                s = (s + rutAux % 10 * (9 - m++ % 6)) % 11;
+            // Recorremos el número de derecha a izquierda
+            while (rutAux > 0) {
+                int digito = rutAux % 10;
+                suma += digito * multiplicador;
+                rutAux /= 10; // Avanzar al siguiente dígito
+
+                multiplicador++;
+                if (multiplicador == 8) {
+                    multiplicador = 2; // Reiniciar la serie 2,3,4,5,6,7
+                }
             }
 
-            // Si el resultado es 'K', el valor char será 75. Si es número, será su ASCII.
-            char dvCalculado = (char) (s != 0 ? s + 47 : 75);
+            // Cálculo del resto
+            int resto = 11 - (suma % 11);
+
+            char dvCalculado;
+            if (resto == 11) {
+                dvCalculado = '0';
+            } else if (resto == 10) {
+                dvCalculado = 'K';
+            } else {
+                dvCalculado = (char) (resto + '0'); // Convertir el número a caracter ASCII
+            }
 
             // 5. Comparar
             return dvIngresado == dvCalculado;
 
         } catch (NumberFormatException e) {
             // Si el cuerpo contiene letras, no es un RUT válido
+            return false;
+        } catch (Exception e) {
+            // Cualquier otro error inesperado
             return false;
         }
     }
