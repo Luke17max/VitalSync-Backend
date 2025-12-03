@@ -20,59 +20,27 @@ public class ValidacionUtil {
         return email != null && Pattern.matches(REGEX_EMAIL, email);
     }
 
-    // --- NUEVO MÉTODO: LIMPIAR RUT ---
-    // Transforma "12.345.678-k" a "12345678K"
+    
+    // Mantenemos el limpiador para guardar datos ordenados
     public static String limpiarRut(String rut) {
         if (rut == null) {
             return "";
         }
-        return rut.replaceAll("[^0-9kK]", "").toUpperCase();
+        return rut.replace(".", "").replace("-", "").trim().toUpperCase();
     }
 
-    // --- VALIDACIÓN ROBUSTA (Acepta con o sin guion) ---
+    /**
+     * Validación de RUT RELAJADA. Solo verifica que no esté vacío. Acepta
+     * cualquier número o formato.
+     */
     public static boolean esRutValido(String rut) {
-        // 1. Limpiamos el RUT antes de validar
-        String rutLimpio = limpiarRut(rut);
-
-        // 2. Validar largo mínimo (ej: 1-9 = 19 -> 2 caracteres)
-        if (rutLimpio.length() < 2) {
+        if (rut == null || rut.trim().isEmpty()) {
             return false;
         }
 
-        try {
-            // 3. Separar Cuerpo y Dígito Verificador
-            String cuerpo = rutLimpio.substring(0, rutLimpio.length() - 1);
-            char dvIngresado = rutLimpio.charAt(rutLimpio.length() - 1);
-
-            // 4. Calcular DV esperado
-            int rutAux = Integer.parseInt(cuerpo);
-            int suma = 0;
-            int multiplicador = 2;
-
-            for (int i = cuerpo.length() - 1; i >= 0; i--) {
-                int digito = Character.getNumericValue(cuerpo.charAt(i));
-                suma += digito * multiplicador;
-                multiplicador++;
-                if (multiplicador == 8) {
-                    multiplicador = 2;
-                }
-            }
-
-            int resto = 11 - (suma % 11);
-            char dvCalculado;
-            if (resto == 11) {
-                dvCalculado = '0';
-            } else if (resto == 10) {
-                dvCalculado = 'K';
-            } else {
-                dvCalculado = (char) (resto + '0');
-            }
-
-            return dvIngresado == dvCalculado;
-
-        } catch (Exception e) {
-            return false;
-        }
+        // Ya no hacemos cálculo matemático (Módulo 11). 
+        // Si tiene más de 2 caracteres, lo damos por bueno.
+        return rut.length() > 2;
     }
 
 }
