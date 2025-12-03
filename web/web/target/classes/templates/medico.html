@@ -1,125 +1,214 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agenda Médica - VitalSync</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <meta name="theme-color" content="#004d40">
-    
-    <style>
-        :root {
-            --doc-primary: #004d40;
-            --doc-accent: #00796b;
-            --bg-soft: #f4fbf9;
-        }
-        body { background-color: var(--bg-soft); font-family: 'Segoe UI', sans-serif; padding-bottom: 60px; }
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Agenda Médica - VitalSync</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <meta name="theme-color" content="#004d40">
 
-        /* Header */
-        .header-medico {
-            background-color: var(--doc-primary);
-            color: white;
-            padding: 20px;
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            margin-bottom: 30px;
-        }
+        <style>
+            /* TEMA MÉDICO SERIO */
+            :root {
+                --doc-primary: #004d40;
+                --doc-accent: #00796b;
+                --bg-soft: #f0fdfc;
+            }
+            body {
+                background-color: var(--bg-soft);
+                font-family: 'Segoe UI', sans-serif;
+                padding-bottom: 60px;
+            }
 
-        /* Tarjeta Paciente */
-        .card-paciente {
-            border: none;
-            border-radius: 16px;
-            background: white;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            border-left: 8px solid var(--doc-accent);
-            transition: transform 0.2s;
-        }
-        .card-paciente:active { transform: scale(0.98); }
+            /* HEADER */
+            .header-medico {
+                background-color: var(--doc-primary);
+                color: white;
+                padding: 20px;
+                border-bottom-left-radius: 20px;
+                border-bottom-right-radius: 20px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                margin-bottom: 30px;
+            }
 
-        .hora-box {
-            background-color: #e0f2f1;
-            color: var(--doc-primary);
-            padding: 10px;
-            border-radius: 12px;
-            font-weight: bold;
-            text-align: center;
-            min-width: 85px;
-        }
+            /* TARJETA DE PACIENTE (Simple) */
+            .card-paciente {
+                border: 1px solid #b2dfdb;
+                border-radius: 12px;
+                background: white;
+                margin-bottom: 15px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+                display: flex;
+                align-items: center;
+                justify-content: space-between; /* Separa Fecha y Botón */
+                padding: 15px;
+                transition: transform 0.2s;
+            }
+            .card-paciente:active {
+                transform: scale(0.98);
+                background-color: #e0f2f1;
+            }
 
-        .btn-ficha {
-            border: 2px solid var(--doc-accent);
-            color: var(--doc-accent);
-            background: white;
-            border-radius: 50px;
-            padding: 6px 20px;
-            font-weight: 700;
-            font-size: 0.9rem;
-        }
-        .btn-ficha:hover { background-color: var(--doc-accent); color: white; }
+            /* FECHA DESTACADA */
+            .fecha-box {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                color: var(--doc-primary);
+            }
+            .icono-cal {
+                font-size: 1.5rem;
+            }
+            .texto-fecha {
+                font-size: 1.2rem;
+                font-weight: 700;
+            }
 
-        .btn-logout {
-            background-color: white;
-            color: #c62828;
-            border: 2px solid #c62828;
-            border-radius: 50px;
-            padding: 12px 30px;
-            font-weight: bold;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-    </style>
-</head>
-<body>
+            /* BOTÓN FICHA */
+            .btn-ficha {
+                background-color: var(--doc-accent);
+                color: white;
+                border: none;
+                border-radius: 50px;
+                padding: 8px 20px;
+                font-weight: bold;
+                font-size: 0.9rem;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            }
+            .btn-ficha:hover {
+                background-color: var(--doc-primary);
+            }
 
-    <div class="header-medico d-flex justify-content-between align-items-center">
-        <div>
-            <p class="m-0 opacity-75 text-uppercase small fw-bold">Bienvenido</p>
-            <h2 class="m-0 fw-bold" th:text="${nombreMedico}">Doctor</h2>
-            <span class="badge bg-white text-dark bg-opacity-25 mt-1" th:text="${especialidad}">Especialidad</span>
+            /* MODAL */
+            .modal-header {
+                background-color: var(--doc-primary);
+                color: white;
+            }
+            .info-label {
+                font-size: 0.85rem;
+                color: #546e7a;
+                font-weight: bold;
+                text-transform: uppercase;
+                margin-bottom: 2px;
+            }
+            .info-valor {
+                font-size: 1.2rem;
+                color: #263238;
+                font-weight: 600;
+                margin-bottom: 15px;
+            }
+        </style>
+    </head>
+    <body>
+
+        <!-- ENCABEZADO -->
+        <div class="header-medico d-flex justify-content-between align-items-center">
+            <div>
+                <h6 class="m-0 opacity-75">BIENVENIDO</h6>
+                <h2 class="m-0 fw-bold" th:text="${nombreMedico}">Dr.</h2>
+                <span class="badge bg-light text-dark bg-opacity-50 mt-1" th:text="${especialidad}">Esp</span>
+            </div>
+            <div style="font-size: 2.5rem;">🩺</div>
         </div>
-        <div style="font-size: 2.5rem; opacity: 0.8;">👨‍⚕️</div>
-    </div>
 
-    <div class="container">
-        
-        <div class="d-flex justify-content-between align-items-center mb-4 px-2">
-            <h5 class="text-secondary fw-bold m-0">Agenda Diaria</h5>
-            <span class="badge rounded-pill bg-success px-3 py-2" th:text="${#lists.size(agenda) + ' CITAS'}">0</span>
-        </div>
+        <div class="container">
 
-        <div th:if="${#lists.isEmpty(agenda)}" class="text-center p-5 text-muted">
-            <span style="font-size: 3rem;">☕</span>
-            <h4 class="mt-3">Agenda libre</h4>
-            <p>No hay pacientes para hoy.</p>
-        </div>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="text-secondary fw-bold m-0">Pacientes Agendados</h5>
+                <span class="badge bg-secondary rounded-pill" th:text="${#lists.size(agenda) + ' Citas'}">0</span>
+            </div>
 
-        <div class="card card-paciente" th:each="cita : ${agenda}">
-            <div class="card-body d-flex align-items-center gap-3">
-                <div class="hora-box">
-                    <div class="small text-uppercase opacity-75" th:text="${#temporals.format(cita.fechaHora, 'MMM dd')}">DIC</div>
-                    <div class="fs-4" style="line-height:1;" th:text="${#temporals.format(cita.fechaHora, 'HH:mm')}">10:00</div>
+            <!-- LISTA VACÍA -->
+            <div th:if="${#lists.isEmpty(agenda)}" class="text-center p-5 text-muted">
+                <span style="font-size: 3rem;">☕</span>
+                <h4 class="mt-3">Agenda libre</h4>
+                <p>No hay pacientes programados.</p>
+            </div>
+
+            <!-- LISTA DE TARJETAS SIMPLES -->
+            <div class="card-paciente" th:each="cita : ${agenda}">
+
+                <!-- 1. LA FECHA (Lo primero que se ve) -->
+                <div class="fecha-box">
+                    <span class="icono-cal">🗓️</span>
+                    <span class="texto-fecha" th:text="${#temporals.format(cita.fechaHora, 'dd / MMM / yyyy')}">12 / DIC / 2025</span>
                 </div>
-                <div class="flex-grow-1">
-                    <h5 class="mb-0 fw-bold text-dark" th:text="${cita.nombrePaciente}">Paciente</h5>
-                    <small class="text-muted fw-bold">Consulta General</small>
+
+                <!-- 2. EL BOTÓN (Abre el detalle) -->
+                <!-- Usamos atributos data- para pasar la info al modal sin ir al servidor -->
+                <button class="btn-ficha" 
+                        th:data-paciente="${cita.nombrePaciente}"
+                        th:data-hora="${#temporals.format(cita.fechaHora, 'HH:mm')}"
+                        th:data-especialidad="${especialidad}" 
+                        onclick="verFicha(this)">
+                    VER FICHA ➜
+                </button>
+            </div>
+
+            <div class="text-center mt-5">
+                <a href="/medico-logout" class="btn btn-outline-danger rounded-pill px-4 fw-bold">Cerrar Sesión</a>
+            </div>
+
+        </div>
+
+        <!-- MODAL DE DETALLE (FICHA CLÍNICA) -->
+        <div class="modal fade" id="modalFicha" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold">📋 Ficha de Atención</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-4">
+
+                        <!-- DATOS DEL PACIENTE -->
+                        <div class="text-center mb-4 pb-3 border-bottom">
+                            <div class="bg-light rounded-circle d-inline-block p-3 mb-2">
+                                <span style="font-size: 2rem;">👤</span>
+                            </div>
+                            <div class="info-label">PACIENTE</div>
+                            <h3 class="text-dark fw-bold" id="modalPaciente">Nombre Paciente</h3>
+                        </div>
+
+                        <div class="row text-center">
+                            <div class="col-6 border-end">
+                                <div class="info-label">HORA CITA</div>
+                                <div class="info-valor text-primary" style="font-size: 1.5rem;" id="modalHora">10:00</div>
+                            </div>
+                            <div class="col-6">
+                                <div class="info-label">ESPECIALIDAD</div>
+                                <div class="info-valor" id="modalEspecialidad">Cardiología</div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-success mt-3 mb-0 text-center py-2">
+                            <small>✅ Paciente Confirmado</small>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer justify-content-center border-0 pt-0">
+                        <button type="button" class="btn btn-secondary w-100 rounded-pill" data-bs-dismiss="modal">Cerrar Ficha</button>
+                    </div>
                 </div>
-                <button class="btn-ficha" onclick="mostrarFicha()">FICHA</button>
             </div>
         </div>
 
-        <div class="text-center mt-5 mb-4">
-            <hr class="mb-4 opacity-25">
-            <a href="/medico-logout" class="btn btn-logout">
-                CERRAR SESIÓN
-            </a>
-        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+                            function verFicha(btn) {
+                                // 1. Extraer datos del botón presionado
+                                const paciente = btn.getAttribute('data-paciente');
+                                const hora = btn.getAttribute('data-hora');
+                                const especialidad = btn.getAttribute('data-especialidad');
 
-    </div>
+                                // 2. Llenar el modal
+                                document.getElementById('modalPaciente').innerText = paciente;
+                                document.getElementById('modalHora').innerText = hora;
+                                document.getElementById('modalEspecialidad').innerText = especialidad;
 
-    <script>
-        function mostrarFicha() { alert("Accediendo a historial clínico..."); }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+                                // 3. Mostrar modal
+                                new bootstrap.Modal(document.getElementById('modalFicha')).show();
+                            }
+        </script>
+    </body>
 </html>

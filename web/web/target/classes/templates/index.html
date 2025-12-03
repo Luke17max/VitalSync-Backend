@@ -1,376 +1,533 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VitalSync</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#00695c">
-    
-    <style>
-        /* --- PALETA DE COLORES MÉDICA --- */
-        :root {
-            --medical-primary: #00695c;    
-            --medical-light: #e0f2f1;      
-            --medical-accent: #00897b;     
-            --bg-soft: #f4f9f8;            
-            --text-dark: #263238;          
-            --text-muted: #546e7a;         
-            --success-dark: #2e7d32;       
-            --danger-dark: #c62828;        
-        }
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>VitalSync</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="manifest" href="/manifest.json">
+        <meta name="theme-color" content="#00695c">
 
-        body { 
-            background-color: var(--bg-soft); 
-            padding-bottom: 100px; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: var(--text-dark);
-        }
+        <style>
+            /* --- PALETA DE COLORES MÉDICA --- */
+            :root {
+                --medical-primary: #00695c;
+                --medical-light: #e0f2f1;
+                --medical-accent: #00897b;
+                --bg-soft: #f4f9f8;
+                --text-dark: #263238;
+                --text-muted: #546e7a;
+                --success-dark: #2e7d32;
+                --danger-dark: #c62828;
+            }
 
-        /* HEADER CON LOGO */
-        .header-app { 
-            background-color: var(--medical-primary); 
-            color: white; 
-            padding: 15px 20px; 
-            border-bottom-left-radius: 20px; 
-            border-bottom-right-radius: 20px; 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
+            body {
+                background-color: var(--bg-soft);
+                padding-bottom: 100px;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                color: var(--text-dark);
+            }
 
-        .logo-img {
-            height: 50px;
-            width: auto;
-            background: white;
-            padding: 5px;
-            border-radius: 8px;
-            margin-right: 15px;
-        }
+            /* HEADER CON LOGO */
+            .header-app {
+                background-color: var(--medical-primary);
+                color: white;
+                padding: 15px 20px;
+                border-bottom-left-radius: 20px;
+                border-bottom-right-radius: 20px;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+                margin-bottom: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
 
-        /* TARJETAS */
-        .card-cita { 
-            border: 1px solid #dae0e5;
-            border-radius: 16px; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
-            margin-bottom: 20px; 
-            background: white;
-        }
-        .card-body { padding: 1.2rem; }
+            .logo-img {
+                height: 50px;
+                width: auto;
+                background: white;
+                padding: 5px;
+                border-radius: 8px;
+                margin-right: 15px;
+            }
 
-        /* TIPOGRAFÍA */
-        h2, h3, h4 { font-weight: 700; color: var(--medical-primary); letter-spacing: -0.5px; }
-        
-        /* FILTROS */
-        .filtro-container {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            border: 1px solid #dceae5;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
-            margin-bottom: 25px;
-            border-left: 6px solid var(--medical-primary);
-        }
-        
-        .input-fecha-grande {
-            border: 2px solid #b0bec5;
-            border-radius: 10px;
-            padding: 12px;
-            font-size: 1.2rem;
-            width: 100%;
-            margin-bottom: 10px;
-            color: var(--text-dark);
-            background-color: #fafafa;
-        }
-        .input-fecha-grande:focus {
-            border-color: var(--medical-primary);
-            box-shadow: 0 0 0 0.25rem rgba(0, 105, 92, 0.25);
-        }
+            /* TARJETAS */
+            .card-cita {
+                border: 1px solid #dae0e5;
+                border-radius: 16px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+                margin-bottom: 20px;
+                background: white;
+            }
+            .card-body {
+                padding: 1.2rem;
+            }
 
-        /* BOTONES */
-        .btn-reservar { 
-            background-color: var(--medical-accent); 
-            border: none; color: white; border-radius: 12px; padding: 16px; 
-            font-weight: bold; width: 100%; font-size: 1.2rem; letter-spacing: 0.5px;
-        }
-        .btn-reservar:hover { background-color: var(--medical-primary); }
+            /* TIPOGRAFÍA */
+            h2, h3, h4 {
+                font-weight: 700;
+                color: var(--medical-primary);
+                letter-spacing: -0.5px;
+            }
 
-        .btn-cancelar { 
-            background-color: white; border: 2px solid var(--danger-dark); color: var(--danger-dark); 
-            border-radius: 12px; padding: 14px; font-weight: bold; width: 100%; font-size: 1.1rem;
-        }
+            /* FILTROS */
+            .filtro-container {
+                background: white;
+                padding: 20px;
+                border-radius: 15px;
+                border: 1px solid #dceae5;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+                margin-bottom: 25px;
+                border-left: 6px solid var(--medical-primary);
+            }
 
-        /* MENÚ INFERIOR */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: white; height: 85px;
-            display: flex; justify-content: space-around; align-items: center;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
-            z-index: 2000; border-top: 1px solid #e0e0e0;
-        }
-        .nav-item {
-            display: flex; flex-direction: column; align-items: center;
-            text-decoration: none; color: var(--text-muted); font-weight: 600; font-size: 0.9rem; cursor: pointer;
-        }
-        .nav-item.active { 
-            color: var(--medical-primary); border-bottom: 4px solid var(--medical-primary); padding-bottom: 5px;
-        }
-        .nav-icon { font-size: 1.8rem; margin-bottom: 4px; }
+            .input-fecha-grande {
+                border: 2px solid #b0bec5;
+                border-radius: 10px;
+                padding: 12px;
+                font-size: 1.2rem;
+                width: 100%;
+                margin-bottom: 10px;
+                color: var(--text-dark);
+                background-color: #fafafa;
+            }
+            .input-fecha-grande:focus {
+                border-color: var(--medical-primary);
+                box-shadow: 0 0 0 0.25rem rgba(0, 105, 92, 0.25);
+            }
 
-        /* BADGES */
-        .badge-disponible { background-color: var(--medical-light); color: var(--medical-primary); border: 1px solid var(--medical-primary); }
-        .badge-confirmada { background-color: #e8f5e9; color: var(--success-dark); border: 1px solid var(--success-dark); }
+            /* BOTONES */
+            .btn-reservar {
+                background-color: var(--medical-accent);
+                border: none;
+                color: white;
+                border-radius: 12px;
+                padding: 16px;
+                font-weight: bold;
+                width: 100%;
+                font-size: 1.2rem;
+                letter-spacing: 0.5px;
+            }
+            .btn-reservar:hover {
+                background-color: var(--medical-primary);
+            }
 
-        /* VISTAS */
-        .vista { display: none; }
-        .vista-activa { display: block; animation: fadeIn 0.4s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .hidden-by-filter { display: none !important; }
-    </style>
-</head>
-<body>
+            .btn-cancelar {
+                background-color: white;
+                border: 2px solid var(--danger-dark);
+                color: var(--danger-dark);
+                border-radius: 12px;
+                padding: 14px;
+                font-weight: bold;
+                width: 100%;
+                font-size: 1.1rem;
+            }
 
-    <!-- VISTA 1: INICIO -->
-    <div id="vista-inicio" class="vista vista-activa">
-        <div class="header-app d-flex align-items-center justify-content-between">
-            <div class="d-flex align-items-center">
-                <img src="/img/logo.png" alt="Logo" class="logo-img" onerror="this.style.display='none'">
-                <div>
-                    <h2 class="m-0 fw-bold text-white" style="font-size: 1.5rem;">VitalSync</h2>
-                    <p class="m-0 text-white-50" style="font-size: 0.9rem;">Salud Simplificada</p>
-                </div>
-            </div>
-            <div class="text-end text-white">
-                <small class="d-block opacity-75">Bienvenido</small>
-                <strong th:text="${usuario.nombreCompleto}">Paciente</strong>
-            </div>
-        </div>
+            /* MENÚ INFERIOR */
+            .bottom-nav {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: white;
+                height: 85px;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
+                z-index: 2000;
+                border-top: 1px solid #e0e0e0;
+            }
+            .nav-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-decoration: none;
+                color: var(--text-muted);
+                font-weight: 600;
+                font-size: 0.9rem;
+                cursor: pointer;
+            }
+            .nav-item.active {
+                color: var(--medical-primary);
+                border-bottom: 4px solid var(--medical-primary);
+                padding-bottom: 5px;
+            }
+            .nav-icon {
+                font-size: 1.8rem;
+                margin-bottom: 4px;
+            }
 
-        <div class="container">
-            <div th:if="${mensaje}" class="alert alert-dismissible fade show shadow-sm p-4" 
-                 th:classappend="${'alert-' + tipo}" role="alert" style="border-radius: 12px; font-size: 1.1rem;">
-                <strong th:text="${mensaje}"></strong>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
+            /* BADGES */
+            .badge-disponible {
+                background-color: var(--medical-light);
+                color: var(--medical-primary);
+                border: 1px solid var(--medical-primary);
+            }
+            .badge-confirmada {
+                background-color: #e8f5e9;
+                color: var(--success-dark);
+                border: 1px solid var(--success-dark);
+            }
 
-            <div class="row g-3 mb-4">
-                <div class="col-12 col-md-6">
-                    <div onclick="navegar('buscar')" class="card-cita p-4 d-flex align-items-center justify-content-between" 
-                         style="cursor:pointer; border-left: 8px solid var(--medical-primary);">
-                        <div>
-                            <h3 class="mb-1" style="color: var(--medical-primary);">Buscar Hora</h3>
-                            <p class="text-muted mb-0">Reservar nueva atención</p>
-                        </div>
-                        <span style="font-size: 3.5rem;">🔍</span>
+            /* MODAL DE CONFIRMACIÓN */
+            .modal-content {
+                border-radius: 20px;
+                border: none;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            }
+            .modal-header {
+                background-color: var(--medical-primary);
+                color: white;
+                border-top-left-radius: 20px;
+                border-top-right-radius: 20px;
+            }
+            .modal-footer {
+                border: none;
+                justify-content: center;
+                padding-bottom: 20px;
+            }
+            .detalle-confirmacion {
+                background: #f5f5f5;
+                padding: 15px;
+                border-radius: 10px;
+                margin: 15px 0;
+            }
+            .detalle-label {
+                font-size: 0.9rem;
+                color: #666;
+                font-weight: bold;
+                text-transform: uppercase;
+            }
+            .detalle-valor {
+                font-size: 1.2rem;
+                color: #333;
+                font-weight: bold;
+                margin-bottom: 10px;
+            }
+
+            /* TARJETA DE BIENVENIDA */
+            .welcome-card {
+                background: linear-gradient(135deg, #ffffff, #f1f8f6);
+                border-left: 6px solid var(--medical-accent);
+                border-radius: 15px;
+                padding: 20px;
+                margin-bottom: 25px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            }
+
+            /* VISTAS */
+            .vista {
+                display: none;
+            }
+            .vista-activa {
+                display: block;
+                animation: fadeIn 0.4s;
+            }
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
+                to {
+                    opacity: 1;
+                }
+            }
+            .hidden-by-filter {
+                display: none !important;
+            }
+        </style>
+    </head>
+    <body>
+
+        <!-- VISTA 1: INICIO -->
+        <div id="vista-inicio" class="vista vista-activa">
+            <div class="header-app d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <img src="/img/logo.png" alt="Logo" class="logo-img" onerror="this.style.display='none'">
+                    <div>
+                        <h2 class="m-0 fw-bold text-white" style="font-size: 1.5rem;">VitalSync</h2>
+                        <p class="m-0 text-white-50" style="font-size: 0.9rem;">Salud Simplificada</p>
                     </div>
                 </div>
-                <div class="col-12 col-md-6">
-                    <div onclick="navegar('citas')" class="card-cita p-4 d-flex align-items-center justify-content-between" 
-                         style="cursor:pointer; border-left: 8px solid var(--success-dark);">
-                        <div>
-                            <h3 class="mb-1" style="color: var(--success-dark);">Mis Citas</h3>
-                            <p class="text-muted mb-0">Revise sus horas agendadas</p>
-                        </div>
-                        <span style="font-size: 3.5rem;">📅</span>
-                    </div>
+                <div class="text-end text-white">
+                    <small class="d-block opacity-75">Bienvenido</small>
+                    <strong th:text="${usuario.nombreCompleto}">Paciente</strong>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- VISTA 2: BUSCAR (Corregida Lógica de Fechas) -->
-    <div id="vista-buscar" class="vista">
-        <div class="header-app pt-3 pb-4">
-            <h2 class="m-0 text-white">Reservar Hora</h2>
-            <p class="m-0 text-white-50">Elija un rango de fechas</p>
-        </div>
-        
-        <div class="container" style="margin-top: -20px;">
-            <div class="filtro-container">
-                <h5 class="fw-bold mb-3" style="color: var(--medical-primary);">📅 Seleccione las fechas:</h5>
-                <div class="row g-3">
+            <div class="container">
+                <div th:if="${mensaje}" class="alert alert-dismissible fade show shadow-sm p-4" 
+                     th:classappend="${'alert-' + tipo}" role="alert" style="border-radius: 12px; font-size: 1.1rem;">
+                    <strong th:text="${mensaje}"></strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <div class="welcome-card">
+                    <h3 class="fw-bold mb-2" style="color: var(--medical-primary);">👋 ¡Bienvenido/a!</h3>
+                    <p class="text-muted mb-0" style="font-size: 1.1rem;">
+                        Seleccione una opción para gestionar su salud hoy.
+                    </p>
+                </div>
+
+                <div class="row g-3 mb-4">
                     <div class="col-12 col-md-6">
-                        <label class="fw-bold text-muted mb-1">DESDE (Inicio):</label>
-                        <input type="date" id="fechaInicio" class="input-fecha-grande" onchange="filtrarPorFechas()">
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <label class="fw-bold text-muted mb-1">HASTA (Fin):</label>
-                        <input type="date" id="fechaFin" class="input-fecha-grande" onchange="filtrarPorFechas()">
-                    </div>
-                </div>
-                <p id="resultado-filtro" class="mt-3 mb-0 fw-bold" style="color: var(--medical-primary); font-size: 1.1rem;">
-                    Cargando disponibilidad...
-                </p>
-            </div>
-
-            <div id="lista-horas">
-                <div th:if="${#lists.isEmpty(disponibles)}" class="text-center p-5 bg-white rounded-3 shadow-sm">
-                    <h4>No hay horas cargadas en la base de datos.</h4>
-                </div>
-
-                <div class="card card-cita item-cita" th:each="hora : ${disponibles}" th:attr="data-fecha=${#temporals.format(hora.fechaHora, 'yyyy-MM-dd')}">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="badge badge-disponible px-3 py-2 rounded-pill fw-bold">DISPONIBLE</span>
-                            <span class="fw-bold" style="color: var(--text-muted); font-size: 1.1rem;" th:text="${hora.especialidad}">Especialidad</span>
-                        </div>
-                        <h4 class="card-title mb-1 fw-bold" style="color: var(--text-dark);" th:text="${hora.nombreMedico}">Doctor</h4>
-                        <div class="d-flex align-items-center gap-3 my-4 p-3 rounded-3" style="background-color: var(--bg-soft);">
-                            <div class="text-center pe-3 border-end border-2">
-                                <div class="fw-bold text-uppercase" style="color: var(--text-muted);" th:text="${#temporals.format(hora.fechaHora, 'MMM').toUpperCase()}">MES</div>
-                                <div class="fs-1 fw-bold" style="line-height:1; color:var(--medical-primary);" th:text="${#temporals.format(hora.fechaHora, 'dd')}">01</div>
-                            </div>
+                        <div onclick="navegar('buscar')" class="card-cita p-4 d-flex align-items-center justify-content-between" 
+                             style="cursor:pointer; border-left: 8px solid var(--medical-primary);">
                             <div>
-                                <div class="fs-2 fw-bold" style="color: var(--text-dark);" th:text="${#temporals.format(hora.fechaHora, 'HH:mm')}">00:00</div>
-                                <div class="fw-bold text-muted" th:text="${#temporals.format(hora.fechaHora, 'EEEE')}">Día</div>
+                                <h3 class="mb-1" style="color: var(--medical-primary);">Buscar Hora</h3>
+                                <p class="text-muted mb-0">Reservar nueva atención</p>
+                            </div>
+                            <span style="font-size: 3.5rem;">🔍</span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div onclick="navegar('citas')" class="card-cita p-4 d-flex align-items-center justify-content-between" 
+                             style="cursor:pointer; border-left: 8px solid var(--success-dark);">
+                            <div>
+                                <h3 class="mb-1" style="color: var(--success-dark);">Mis Citas</h3>
+                                <p class="text-muted mb-0">Ver horas agendadas</p>
+                            </div>
+                            <span style="font-size: 3.5rem;">📅</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VISTA 2: BUSCAR -->
+        <div id="vista-buscar" class="vista">
+            <div class="header-app pt-3 pb-4">
+                <h2 class="m-0 text-white">Reservar Hora</h2>
+                <p class="m-0 text-white-50">Elija una fecha para ver doctores</p>
+            </div>
+
+            <div class="container" style="margin-top: -20px;">
+                <div class="filtro-container">
+                    <h5 class="fw-bold mb-3" style="color: var(--medical-primary);">📅 Seleccione las fechas:</h5>
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <label class="fw-bold text-muted mb-1">DESDE (Inicio):</label>
+                            <input type="date" id="fechaInicio" class="input-fecha-grande" onchange="filtrarPorFechas()">
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="fw-bold text-muted mb-1">HASTA (Fin):</label>
+                            <input type="date" id="fechaFin" class="input-fecha-grande" onchange="filtrarPorFechas()">
+                        </div>
+                    </div>
+                    <p id="resultado-filtro" class="mt-3 mb-0 fw-bold" style="color: var(--medical-primary); font-size: 1.1rem;">
+                        Mostrando todas las horas disponibles.
+                    </p>
+                </div>
+
+                <div id="lista-horas">
+                    <div th:if="${#lists.isEmpty(disponibles)}" class="text-center p-5 bg-white rounded-3 shadow-sm">
+                        <h4>No hay horas cargadas.</h4>
+                    </div>
+
+                    <div class="card card-cita item-cita" th:each="hora : ${disponibles}" th:attr="data-fecha=${#temporals.format(hora.fechaHora, 'yyyy-MM-dd')}">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge badge-disponible px-3 py-2 rounded-pill fw-bold">DISPONIBLE</span>
+                                <span class="fw-bold" style="color: var(--text-muted); font-size: 1.1rem;" th:text="${hora.especialidad}">Especialidad</span>
+                            </div>
+                            <h4 class="card-title mb-1 fw-bold" style="color: var(--text-dark);" th:text="${hora.nombreMedico}">Doctor</h4>
+                            <div class="d-flex align-items-center gap-3 my-4 p-3 rounded-3" style="background-color: var(--bg-soft);">
+                                <div class="text-center pe-3 border-end border-2">
+                                    <div class="fw-bold text-uppercase" style="color: var(--text-muted);" th:text="${#temporals.format(hora.fechaHora, 'MMM').toUpperCase()}">MES</div>
+                                    <div class="fs-1 fw-bold" style="line-height:1; color:var(--medical-primary);" th:text="${#temporals.format(hora.fechaHora, 'dd')}">01</div>
+                                </div>
+                                <div>
+                                    <div class="fs-2 fw-bold" style="color: var(--text-dark);" th:text="${#temporals.format(hora.fechaHora, 'HH:mm')}">00:00</div>
+                                    <div class="fw-bold text-muted" th:text="${#temporals.format(hora.fechaHora, 'EEEE')}">Día</div>
+                                </div>
+                            </div>
+
+                            <button type="button" class="btn-reservar shadow-sm" 
+                                    th:data-id="${hora.idCita}"
+                                    th:data-medico="${hora.nombreMedico}"
+                                    th:data-especialidad="${hora.especialidad}"
+                                    th:data-fecha="${#temporals.format(hora.fechaHora, 'dd-MM-yyyy')}"
+                                    th:data-hora="${#temporals.format(hora.fechaHora, 'HH:mm')}"
+                                    onclick="abrirModalConfirmacion(this)">
+                                RESERVAR HORA
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <br>
+            </div>
+        </div>
+
+        <!-- VISTA 3: MIS CITAS -->
+        <div id="vista-citas" class="vista">
+            <div class="header-app pt-3 pb-4" style="background-color: var(--success-dark);">
+                <h2 class="m-0 text-white">Mis Citas</h2>
+                <p class="m-0 text-white-50">Sus atenciones confirmadas</p>
+            </div>
+
+            <div class="container" style="margin-top: -20px;">
+                <div th:if="${#lists.isEmpty(misCitas)}" class="text-center p-5 bg-white rounded-4 shadow-sm">
+                    <span style="font-size: 4rem; opacity: 0.5;">📭</span>
+                    <h4 class="mt-3 text-muted">No tiene citas pendientes.</h4>
+                    <button onclick="navegar('buscar')" class="btn btn-outline-secondary mt-3 rounded-pill px-4 py-2 fw-bold">Ir a Reservar</button>
+                </div>
+
+                <div class="card card-cita" th:each="cita : ${misCitas}" style="border-left: 8px solid var(--success-dark);">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="badge badge-confirmada px-3 py-2 rounded-pill fw-bold">CONFIRMADA</span>
+                            <span class="text-muted small fw-bold" th:text="${cita.especialidad}">Especialidad</span>
+                        </div>
+                        <h4 class="fw-bold" style="color: var(--text-dark);" th:text="${cita.nombreMedico}">Doctor</h4>
+                        <div class="d-flex align-items-center gap-3 my-3 ps-2 border-start border-4 border-success">
+                            <div>
+                                <div class="fw-bold text-uppercase small text-muted">Fecha y Hora</div>
+                                <div class="fs-4 fw-bold" style="color: var(--success-dark);">
+                                    <span th:text="${#temporals.format(cita.fechaHora, 'dd-MMM')}">Fecha</span> | 
+                                    <span th:text="${#temporals.format(cita.fechaHora, 'HH:mm')}">Hora</span>
+                                </div>
                             </div>
                         </div>
-                        <form action="/reservar" method="post">
-                            <input type="hidden" name="idCita" th:value="${hora.idCita}"/>
-                            <button type="submit" class="btn-reservar shadow-sm">RESERVAR HORA</button>
+                        <form action="/cancelar" method="post" onsubmit="return confirm('¿Confirma cancelar? Solo posible con 24h de anticipación.');">
+                            <input type="hidden" name="idCita" th:value="${cita.idCita}"/>
+                            <button type="submit" class="btn-cancelar">CANCELAR CITA</button>
                         </form>
                     </div>
                 </div>
+                <br>
             </div>
-            <br>
-        </div>
-    </div>
-
-    <!-- VISTA 3: MIS CITAS -->
-    <div id="vista-citas" class="vista">
-        <div class="header-app pt-3 pb-4" style="background-color: var(--success-dark);">
-            <h2 class="m-0 text-white">Mis Citas</h2>
-            <p class="m-0 text-white-50">Sus atenciones confirmadas</p>
         </div>
 
-        <div class="container" style="margin-top: -20px;">
-            <div th:if="${#lists.isEmpty(misCitas)}" class="text-center p-5 bg-white rounded-4 shadow-sm">
-                <span style="font-size: 4rem; opacity: 0.5;">📭</span>
-                <h4 class="mt-3 text-muted">No tiene citas pendientes.</h4>
-                <button onclick="navegar('buscar')" class="btn btn-outline-secondary mt-3 rounded-pill px-4 py-2 fw-bold">Ir a Reservar</button>
+        <!-- VISTA 4: PERFIL -->
+        <div id="vista-perfil" class="vista">
+            <div class="header-app pt-3 pb-4" style="background-color: #37474f;">
+                <h2 class="m-0 text-white">Mi Perfil</h2>
+                <p class="m-0 text-white-50">Datos personales</p>
             </div>
-
-            <div class="card card-cita" th:each="cita : ${misCitas}" style="border-left: 8px solid var(--success-dark);">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between mb-2">
-                        <span class="badge badge-confirmada px-3 py-2 rounded-pill fw-bold">CONFIRMADA</span>
-                        <span class="text-muted small fw-bold" th:text="${cita.especialidad}">Especialidad</span>
+            <div class="container" style="margin-top: -20px;">
+                <div class="card card-cita p-4">
+                    <div class="mb-4">
+                        <small class="text-muted fw-bold d-block mb-1">NOMBRE COMPLETO</small>
+                        <strong class="fs-4 text-dark" th:text="${usuario.nombreCompleto}">Nombre</strong>
                     </div>
-                    <h4 class="fw-bold" style="color: var(--text-dark);" th:text="${cita.nombreMedico}">Doctor</h4>
-                    <div class="d-flex align-items-center gap-3 my-3 ps-2 border-start border-4 border-success">
-                         <div>
-                            <div class="fw-bold text-uppercase small text-muted">Fecha y Hora</div>
-                            <div class="fs-4 fw-bold" style="color: var(--success-dark);">
-                                <span th:text="${#temporals.format(cita.fechaHora, 'dd-MMM')}">Fecha</span> | 
-                                <span th:text="${#temporals.format(cita.fechaHora, 'HH:mm')}">Hora</span>
+                    <div class="mb-4">
+                        <small class="text-muted fw-bold d-block mb-1">CORREO</small>
+                        <strong class="fs-5 text-dark" th:text="${usuario.email}">Email</strong>
+                    </div>
+                    <hr class="my-4">
+                    <a href="/logout" class="btn btn-danger rounded-pill w-100 py-3 fw-bold shadow-sm">CERRAR SESIÓN</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- MENÚ INFERIOR -->
+        <nav class="bottom-nav">
+            <div onclick="navegar('inicio')" class="nav-item active" id="btn-inicio"><span class="nav-icon">🏠</span>Inicio</div>
+            <div onclick="navegar('buscar')" class="nav-item" id="btn-buscar"><span class="nav-icon">🔍</span>Buscar</div>
+            <div onclick="navegar('citas')" class="nav-item" id="btn-citas"><span class="nav-icon">📅</span>Citas</div>
+            <div onclick="navegar('perfil')" class="nav-item" id="btn-perfil"><span class="nav-icon">👤</span>Perfil</div>
+        </nav>
+
+        <!-- MODAL DE CONFIRMACIÓN -->
+        <div class="modal fade" id="modalConfirmar" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold">Confirmar Reserva</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <p class="mb-3">Está a punto de agendar la siguiente hora:</p>
+                        <div class="detalle-confirmacion">
+                            <div class="detalle-label">MÉDICO</div>
+                            <div class="detalle-valor" id="modalMedico">Dr. Nombre</div>
+                            <div class="detalle-label">ESPECIALIDAD</div>
+                            <div class="detalle-valor" id="modalEspecialidad">Cardiología</div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="detalle-label">FECHA</div>
+                                    <div class="detalle-valor text-primary" id="modalFecha">12-12-2025</div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="detalle-label">HORA</div>
+                                    <div class="detalle-valor text-primary" id="modalHora">10:00</div>
+                                </div>
                             </div>
-                         </div>
+                        </div>
+                        <form action="/reservar" method="post">
+                            <input type="hidden" name="idCita" id="modalIdCita"/>
+                            <button type="submit" class="btn btn-success w-100 py-3 fw-bold shadow-sm" style="font-size:1.2rem;">
+                                ✅ SÍ, CONFIRMAR CITA
+                            </button>
+                        </form>
+                        <button type="button" class="btn btn-link text-muted mt-2" data-bs-dismiss="modal">Volver atrás</button>
                     </div>
-                    <form action="/cancelar" method="post" onsubmit="return confirm('¿Confirma cancelar? Solo posible con 24h de anticipación.');">
-                        <input type="hidden" name="idCita" th:value="${cita.idCita}"/>
-                        <button type="submit" class="btn-cancelar">CANCELAR CITA</button>
-                    </form>
                 </div>
             </div>
-            <br>
         </div>
-    </div>
 
-    <!-- VISTA 4: PERFIL -->
-    <div id="vista-perfil" class="vista">
-        <div class="header-app pt-3 pb-4" style="background-color: #37474f;">
-            <h2 class="m-0 text-white">Mi Perfil</h2>
-            <p class="m-0 text-white-50">Datos personales</p>
-        </div>
-        <div class="container" style="margin-top: -20px;">
-            <div class="card card-cita p-4">
-                <div class="mb-4">
-                    <small class="text-muted fw-bold d-block mb-1">NOMBRE COMPLETO</small>
-                    <strong class="fs-4 text-dark" th:text="${usuario.nombreCompleto}">Nombre</strong>
-                </div>
-                <div class="mb-4">
-                    <small class="text-muted fw-bold d-block mb-1">RUT</small>
-                    <strong class="fs-4 text-dark" th:text="${usuario.rutPaciente}">RUT</strong>
-                </div>
-                <div class="mb-4">
-                    <small class="text-muted fw-bold d-block mb-1">CORREO</small>
-                    <strong class="fs-5 text-dark" th:text="${usuario.email}">Email</strong>
-                </div>
-                <hr class="my-4">
-                <a href="/logout" class="btn btn-danger rounded-pill w-100 py-3 fw-bold shadow-sm">CERRAR SESIÓN</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- NAVEGACIÓN -->
-    <nav class="bottom-nav">
-        <div onclick="navegar('inicio')" class="nav-item active" id="btn-inicio"><span class="nav-icon">🏠</span>Inicio</div>
-        <div onclick="navegar('buscar')" class="nav-item" id="btn-buscar"><span class="nav-icon">🔍</span>Buscar</div>
-        <div onclick="navegar('citas')" class="nav-item" id="btn-citas"><span class="nav-icon">📅</span>Citas</div>
-        <div onclick="navegar('perfil')" class="nav-item" id="btn-perfil"><span class="nav-icon">👤</span>Perfil</div>
-    </nav>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        function navegar(vista) {
-            document.querySelectorAll('.vista').forEach(el => el.classList.remove('vista-activa'));
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            document.getElementById('vista-' + vista).classList.add('vista-activa');
-            document.getElementById('btn-' + vista).classList.add('active');
-            window.scrollTo(0,0);
-        }
-
-        function filtrarPorFechas() {
-            const inicio = document.getElementById('fechaInicio').value;
-            const fin = document.getElementById('fechaFin').value;
-            const tarjetas = document.querySelectorAll('.item-cita');
-            const msg = document.getElementById('resultado-filtro');
-            let contador = 0;
-
-            // LÓGICA ESTRICTA: Si falta alguna fecha, ocultar todo
-            if (!inicio || !fin) {
-                tarjetas.forEach(c => c.classList.add('hidden-by-filter'));
-                msg.innerText = "Seleccione ambas fechas (Desde y Hasta) para ver resultados.";
-                msg.style.color = "var(--danger-dark)";
-                return;
-            }
-
-            msg.style.color = "var(--medical-primary)";
-            
-            tarjetas.forEach(c => {
-                const fechaCita = c.getAttribute('data-fecha');
-                let mostrar = true;
-                if(fechaCita < inicio || fechaCita > fin) mostrar = false;
-
-                if (mostrar) {
-                    c.classList.remove('hidden-by-filter');
-                    contador++;
-                } else {
-                    c.classList.add('hidden-by-filter');
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+                function navegar(vista) {
+                    document.querySelectorAll('.vista').forEach(el => el.classList.remove('vista-activa'));
+                    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                    document.getElementById('vista-' + vista).classList.add('vista-activa');
+                    document.getElementById('btn-' + vista).classList.add('active');
+                    window.scrollTo(0, 0);
                 }
-            });
-            
-            msg.innerText = `Mostrando ${contador} horas disponibles en el rango seleccionado.`;
-        }
-        
-        window.onload = function() {
-            // Inicializamos los inputs con las fechas de la DEMO (Diciembre 2025)
-            // Así la primera impresión no está vacía.
-            const demoInicio = "2025-12-01";
-            const demoFin = "2025-12-31";
-            
-            const inputInicio = document.getElementById('fechaInicio');
-            const inputFin = document.getElementById('fechaFin');
-            
-            if(inputInicio && inputFin) {
-                inputInicio.value = demoInicio;
-                inputFin.value = demoFin;
-                filtrarPorFechas();
-            }
-        };
-    </script>
-</body>
+
+                function filtrarPorFechas() {
+                    const inicio = document.getElementById('fechaInicio').value;
+                    const fin = document.getElementById('fechaFin').value;
+                    const cards = document.querySelectorAll('.item-cita');
+                    let count = 0;
+
+                    cards.forEach(c => {
+                        const fecha = c.getAttribute('data-fecha');
+                        let show = true;
+                        if (inicio && fecha < inicio)
+                            show = false;
+                        if (fin && fecha > fin)
+                            show = false;
+                        c.style.display = show ? 'block' : 'none';
+                        if (show)
+                            count++;
+                    });
+                    document.getElementById('resultado-filtro').innerText = `Mostrando ${count} horas disponibles.`;
+                }
+
+                function abrirModalConfirmacion(btn) {
+                    const id = btn.getAttribute('data-id');
+                    const medico = btn.getAttribute('data-medico');
+                    const esp = btn.getAttribute('data-especialidad');
+                    const fecha = btn.getAttribute('data-fecha');
+                    const hora = btn.getAttribute('data-hora');
+
+                    document.getElementById('modalIdCita').value = id;
+                    document.getElementById('modalMedico').innerText = medico;
+                    document.getElementById('modalEspecialidad').innerText = esp;
+                    document.getElementById('modalFecha').innerText = fecha;
+                    document.getElementById('modalHora').innerText = hora;
+
+                    const modal = new bootstrap.Modal(document.getElementById('modalConfirmar'));
+                    modal.show();
+                }
+
+                window.onload = function () {
+                    // Rango de fechas por defecto: Diciembre 2025 (Demo)
+                    const inicioDemo = "2025-12-01";
+                    const finDemo = "2025-12-31";
+
+                    const inputInicio = document.getElementById('fechaInicio');
+                    const inputFin = document.getElementById('fechaFin');
+
+                    if (inputInicio && inputFin) {
+                        inputInicio.value = inicioDemo;
+                        inputFin.value = finDemo;
+                        filtrarPorFechas(); // Aplicar filtro inicial
+                    }
+                };
+        </script>
+    </body>
 </html>

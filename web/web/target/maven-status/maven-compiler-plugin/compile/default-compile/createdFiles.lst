@@ -1,6 +1,7 @@
+cl\vitalsync\web\bd\RepositorioCita.class
+cl\vitalsync\web\servicio\ValidacionUtil.class
 cl\vitalsync\web\controlador\VitalSyncControlador.class
 cl\vitalsync\web\WebApplication.class
-cl\vitalsync\web\bd\RepositorioCita.class
 cl\vitalsync\web\bd\RepositorioMedico.class
 cl\vitalsync\web\bd\ConexionDB.class
 cl\vitalsync\web\modelo\HoraMedica.class
