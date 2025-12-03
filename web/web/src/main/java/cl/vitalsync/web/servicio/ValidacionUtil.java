@@ -20,45 +20,50 @@ public class ValidacionUtil {
         return email != null && Pattern.matches(REGEX_EMAIL, email);
     }
 
-    
+    /**
+     * Valida el RUT chileno recorriendo la cadena de texto (Más seguro). Acepta
+     * cualquier formato: 12.345.678-5, 123456785, 12345678-K
+     */
     public static boolean esRutValido(String rut) {
         if (rut == null || rut.trim().isEmpty()) {
             return false;
         }
 
-        // 1. Limpiar y Estandarizar: Quitar puntos, guion y pasar a Mayúsculas
-        String rutLimpio = rut.replace(".", "").replace("-", "").trim().toUpperCase();
+        // 1. Limpieza Agresiva: Elimina cualquier cosa que no sea número o K
+        String rutLimpio = rut.replaceAll("[^0-9kK]", "").toUpperCase();
 
-        // 2. Validar largo mínimo (ej: 1-9 son 2 caracteres)
+        // 2. Validar largo mínimo (ej: 1-9 = 19 -> 2 caracteres)
         if (rutLimpio.length() < 2) {
             return false;
         }
 
         try {
-            // 3. Separar Cuerpo y Dígito Verificador (DV)
-            // El DV es siempre el último caracter
-            char dvIngresado = rutLimpio.charAt(rutLimpio.length() - 1);
-            
+            // 3. Separar Cuerpo y Dígito Verificador
             String cuerpo = rutLimpio.substring(0, rutLimpio.length() - 1);
+            char dvIngresado = rutLimpio.charAt(rutLimpio.length() - 1);
 
-            // 4. Calcular DV esperado 
-            int rutAux = Integer.parseInt(cuerpo);
+            // 4. Validar que el cuerpo sean solo números (por si acaso)
+            if (!cuerpo.matches("[0-9]+")) {
+                return false;
+            }
+
+            // 5. Calcular DV esperado recorriendo el String de atrás hacia adelante
             int suma = 0;
             int multiplicador = 2;
 
-            // Recorremos el número de derecha a izquierda
-            while (rutAux > 0) {
-                int digito = rutAux % 10;
-                suma += digito * multiplicador;
-                rutAux /= 10; // Avanzar al siguiente dígito
+            for (int i = cuerpo.length() - 1; i >= 0; i--) {
+                // Obtener el valor numérico del caracter en la posición i
+                int digito = Character.getNumericValue(cuerpo.charAt(i));
 
+                suma += digito * multiplicador;
                 multiplicador++;
+
                 if (multiplicador == 8) {
                     multiplicador = 2; // Reiniciar la serie 2,3,4,5,6,7
                 }
             }
 
-            // Cálculo del resto
+            // 6. Calcular el resto
             int resto = 11 - (suma % 11);
 
             char dvCalculado;
@@ -67,17 +72,15 @@ public class ValidacionUtil {
             } else if (resto == 10) {
                 dvCalculado = 'K';
             } else {
-                dvCalculado = (char) (resto + '0'); // Convertir el número a caracter ASCII
+                // Convertir número a char (ej: 5 -> '5')
+                dvCalculado = (char) (resto + '0');
             }
 
-            // 5. Comparar
+            // 7. Comparar
             return dvIngresado == dvCalculado;
 
-        } catch (NumberFormatException e) {
-            // Si el cuerpo contiene letras, no es un RUT válido
-            return false;
         } catch (Exception e) {
-            // Cualquier otro error inesperado
+            System.err.println("Error validando RUT: " + e.getMessage());
             return false;
         }
     }
