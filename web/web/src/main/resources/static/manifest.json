@@ -1,25 +1,25 @@
 
 {
-  "short_name": "VitalSync",
-  "name": "VitalSync - Salud",
-  "icons": [
-    {
-      "src": "static/img/icon-192.png",
-      "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "static/img/icon-512.png",
-      "type": "image/png",
-      "sizes": "512x512"
-    }
-  ],
-  "start_url": "/?source=pwa",
-  "background_color": "#e0f2f1",
-  "display": "standalone",
-  "scope": "/",
-  "theme_color": "#00695c",
-  "orientation": "portrait"
+    "short_name": "VitalSync",
+    "name": "VitalSync Reserva Médica",
+    "icons": [
+        {
+            "src": "/img/logo.png",
+            "type": "image/png",
+            "sizes": "192x192"
+        },
+        {
+            "src": "/img/logo.png",
+            "type": "image/png",
+            "sizes": "512x512"
+        }
+    ],
+    "start_url": "/?source=pwa",
+    "background_color": "#e0f2f1",
+    "display": "standalone",
+    "scope": "/",
+    "theme_color": "#00695c",
+    "orientation": "portrait"
 }
 
 
